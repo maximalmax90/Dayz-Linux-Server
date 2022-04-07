@@ -1,8 +1,9 @@
 Current issues
 =================
 1. Server build 1.64.xxxxx not working - freezes on server creation (one day devs will fix it... I hope...)
-2. Server build 1.63.130836 start correct, but player get "Session terminated" (looking for a reason)
+2. Server build 1.63.130836 run correct, but player get "Session terminated" (looking for a reason)
 3. Server almost always died if battleye is enabled (idk why)
+4. Server build 1.62.95248 run correct, mission start correct and work correct, but need more time to test. Status Icons always disabled (looking for a reason)
 
 Dayz-Linux-Server
 =================
