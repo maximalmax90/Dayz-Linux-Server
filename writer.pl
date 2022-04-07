@@ -3,6 +3,7 @@
 # Copyright 2013 by Denis Erygin,
 # denis.erygin@gmail.com
 #
+# Edited by maximalmax90
 
 use JSON::XS;
 use DBI;
@@ -13,6 +14,7 @@ use constant {
     DB_NAME   => 'dayz',  # Set database name
     DB_LOGIN  => 'dayz',  # Set database login
     DB_PASSWD => 'dayz',  # Set database password
+    DB_HOST =>   'localhost',  #Set database host (ip, domain or localhost if it locate localy)
 
     CACHE_DIR => $ENV{'PWD'}.'/cache/',
     INVENTORY => '[["ItemFlashlight","ItemMap","ItemGPS","MeleeCrowbar"],["ItemBandage","ItemPainkiller","ItemSodaPepsi","ItemSodaCoke","FoodbeefCooked"]]',
@@ -74,9 +76,9 @@ exit;
 
 #---------------------------------------------------------------------------
 sub connect_to_db {
-    my $dbh = DBI->connect('dbi:mysql:'.DB_NAME, DB_LOGIN, DB_PASSWD,
+    my $dbh = DBI->connect('dbi:mysql:'.DB_NAME.':'.DB_HOST, DB_LOGIN, DB_PASSWD,
               {'PrintError' => 1, 'RaiseError' => 1, 'AutoCommit' => 1})
-              or die "Can't connect to mysql: $!";
+              or die "Can't connect to mysql: $DBI::errstr";
     $dbh->{'mysql_auto_reconnect'} = 1;
     return $dbh;
 }
@@ -791,9 +793,9 @@ sub h_get_date_time {}
 sub h_object_publish {
     my $p = shift;
     return unless ($p && ref($p) eq 'ARRAY');
-    my ($cmd, $serverId, $className, $damage, $characterId, $worldSpace, $inventory, $hitPoints, $fuel, $objectUID) = @$p;
-    unless ($className) {
-        print STDERR "Error h_object_publish(): className undefined!\n";
+    my ($cmd, $serverId, $type, $damage, $characterId, $worldSpace, $inventory, $hitPoints, $fuel, $objectUID) = @$p;
+    unless ($type) {
+        print STDERR "Error h_object_publish(): object type undefined!\n";
         return;
     }
     $characterId =~ s/"//g;
@@ -801,19 +803,19 @@ sub h_object_publish {
     
     if ($worldSpace) {
         unless ( parse_json ($worldSpace) ) {
-            print STDERR "Error h_object_publish($className): worldSpace invalid json!\n";
+            print STDERR "Error h_object_publish($type): worldSpace invalid json!\n";
             return;
         }
     }
     if ($inventory) {
         unless ( parse_json ($inventory) ) {
-            print STDERR "Error h_object_publish($className): inventory invalid json!\n";
+            print STDERR "Error h_object_publish($type): inventory invalid json!\n";
             $inventory = '[]';
         }
     }
     if ($hitPoints) {
         unless ( parse_json ($hitPoints) ) {
-            print STDERR "Error h_object_publish($className): hitPoints invalid json!\n";
+            print STDERR "Error h_object_publish($type): hitPoints invalid json!\n";
             $hitPoints = '[]';
         }
     }
@@ -824,12 +826,12 @@ sub h_object_publish {
     $hitPoints  ||= '[]';
     $damage     ||= 0;
     $fuel       ||= 0;
-    
-    my $sql = "INSERT INTO Object_DATA(ObjectUID, Instance, Classname, Damage, CharacterID, Worldspace, Inventory, 
+
+    my $sql = "INSERT INTO Object_DATA(ObjectUID, Instance, Classname, Damage, CharacterID, Worldspace, Inventory,
                                        Hitpoints, Fuel, Datestamp) 
                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)";
     my $sth = $dbh->prepare ($sql);
-    my $res = $sth->execute ($objectUID, $serverId, $className, $damage, $characterId, $worldSpace, $inventory, $hitPoints, $fuel);
+    my $res = $sth->execute ($objectUID, $serverId, $type, $damage, $characterId, $worldSpace, $inventory, $hitPoints, $fuel);
     return $res;
 }
 
