@@ -1,9 +1,15 @@
+Current issues
+=================
+1. Server build 1.64.xxxxx not working - freezes on server creation (one day devs will fix it... I hope...)
+2. Server build 1.63.130836 start correct, but player get "Session terminated" (looking for a reason)
+3. Server almost always died if battleye is enabled (idk why)
+
 Dayz-Linux-Server
 =================
 
 ~A private hive DayZ 1.8.0.3 server on Linux~
 
-Migration to DayZ 1.9.0 in progress...
+Migration to DayZ 1.9.0 in progress... At the moment the build is not working.
 
 Installation instructions
 =========================
