@@ -1,16 +1,23 @@
 Current issues
 =================
 1. Server build 1.64.xxxxx not working - freezes on server creation (one day devs will fix it... I hope...)
-2. Server build 1.63.130836 run correct, but player get "Session terminated" (looking for a reason)
-3. Server almost always died if battleye is enabled (idk why)
-4. Server build 1.62.95248 run correct, mission start correct and work correct, but need more time to test. Status Icons always disabled (looking for a reason)
+Server binaries: https://forums.bohemia.net/forums/topic/213193-arma-2-oa-update-164-build-144629-release-candidate-for-eol-end-of-life/
+
+2. Server build 1.63.130836 run correct, but player get "Session terminated" (idk why)
+Server binaries: https://forums.bohemia.net/forums/topic/189123-arma-2-operation-arrowhead-linux-server-163130836/
+
+3. Server build 1.62.95248 run correct, mission start correct and work correct, but need more tests. Status Icons always disabled (idk why)
+Server binaries: included
+
+4. Server almost always died if battleye is enabled (idk why)
+
+battleye.so not included because of useless
 
 Dayz-Linux-Server
 =================
 
-~A private hive DayZ 1.8.0.3 server on Linux~
-
-Migration to DayZ 1.9.0 in progress... At the moment the build is not working.
+A private hive DayZ 1.9.0 server on Linux
+Only for test and fixes...
 
 Installation instructions
 =========================
@@ -60,7 +67,3 @@ Installation instructions
 
 7. Run ./restarter.pl<br>
    $ screen -r
-
-
-
-
