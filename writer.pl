@@ -11,16 +11,21 @@ use warnings;
 use strict;
 
 use constant {
-    DB_NAME   => 'dayz',  # Set database name
-    DB_LOGIN  => 'dayz',  # Set database login
-    DB_PASSWD => 'dayz',  # Set database password
-    DB_HOST =>   'localhost',  #Set database host (ip, domain or localhost if it locate localy)
-
+    DB_NAME   			=> 'dayz',  	# Set database name
+    DB_LOGIN  			=> 'dayz',  	# Set database login
+    DB_PASSWD 			=> 'dayz',  	# Set database password
+    DB_HOST 			=> 'localhost', # Set database host (ip, domain or localhost if it locate localy)
+	
+	FULL_MOON_NIGHT 	=> '0', 	# Set full Moon every night, 0 - false, 1 - true
+	TIME_OFFSET 		=> '0',		# Set time offset, 0 - localtime, variable can accept negative value
+	STATIC_TIME			=> '0',		# If set > 0, time (hour) will be locked at this value 
+	
     CACHE_DIR => $ENV{'PWD'}.'/cache/',
     INVENTORY => '[["ItemFlashlight","ItemMap","ItemGPS","MeleeCrowbar"],["ItemBandage","ItemPainkiller","ItemSodaPepsi","ItemSodaCoke","FoodbeefCooked"]]',
     BACKPACK  => '["DZ_Patrol_Pack_EP1",[],[]]',
     MODEL     => '"Survivor2_DZ"'
 };
+my $sync = "SKIP"; 
 
 my $myPlayerCounter = 1;
 
@@ -35,6 +40,7 @@ my %FN_IPC  = (
     304 => \&h_object_delete,
     305 => \&h_vehicle_moved,
     306 => \&h_vehicle_damaged,
+	307 => \&h_get_date_time,
     308 => \&h_object_publish,
     309 => \&h_object_uid_update_inventory,
     310 => \&h_object_uid_delete,
@@ -787,7 +793,24 @@ sub h_vehicle_damaged {
 }
 
 # 307
-sub h_get_date_time {}
+sub h_get_date_time {
+	my ($sec,$min,$hour,$mday,$mon,$year) = localtime(time() + TIME_OFFSET*3600);
+	$year += 1900;
+	$mon++;
+	my $file = CACHE_DIR.'/set_time.sqf';
+    open  (IN, ">$file") or die "Can't find $file";
+	if (STATIC_TIME) {
+		$hour = STATIC_TIME;
+		$min = 0;
+		$sync = "PASS";
+	}
+	if (FULL_MOON_NIGHT) {
+		print IN '["'.$sync.'",[2012,8,2,'.$hour.','.$min.']]';
+	} else {
+		print IN '["'.$sync.'",['.$year.','.$mon.','.$mday.','.$hour.','.$min.']]';
+    }
+    close (IN);
+}
 
 # 308
 sub h_object_publish {
