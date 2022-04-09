@@ -16,7 +16,6 @@ unless (-f PATH.'server') {
     exit;
 }
 
-set_time  ();
 logrotate ();
 
 if (-f PIDFILE) {
@@ -40,19 +39,6 @@ print STDERR $res,"\n" if $res;
 exit;
 
 #-----------------------------------------------------------------------------------------------
-sub set_time {
-    my ($s, $m, $h, $day, $mon, $y) = localtime(time() - 3*3600);
-    $y += 1900;
-    $mon++;
-    
-    ($h, $m) = (20, 0) if ($h > 20 || ($h >= 0 && $h < 4));
-    
-    my $file = PATH.'cache/set_time.sqf';
-    open  (IN, ">$file") or die "Can't find $file";
-    #print IN '["PASS",['.$y.','.$mon.','.$day.','.$h.','.$m.']]';
-    print IN '["PASS",[2012,6,6,'.$h.','.$m.']]';
-    close (IN);
-}
 
 sub logrotate {
     my $log = PATH.'dump.log';
